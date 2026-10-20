@@ -64,6 +64,11 @@ bridge is.
   order (SQLite); in plain PHP, nothing of Symfony nor Doctrine loaded on the memory engine and no
   class of a framework through omnisearch/typesense (`BareTest`); the Symfony bundle with the
   memory engine, and hosted by glitchr/typesense-bundle (omnisearch/typesense's `HostedTest`).
+- Verified on an application: glitchr's lesringostars declares four of its five collections with
+  these attributes, through omnisearch/typesense and hosted by glitchr/typesense-bundle: the
+  schemas are those its server held, byte for byte, its 628 documents and its blog's searches
+  (pages, terms, the tags facet) unchanged; the entities load in its Laravel twin with nothing of
+  Symfony.
 - Not verified: an engine other than Typesense and memory; Doctrine's MongoDB ODM (the store
   falls back on `findBy()`, never run); Laravel (no bridge yet: one is written when an application
   under Laravel indexes).

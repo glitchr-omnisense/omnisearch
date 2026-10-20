@@ -1,0 +1,691 @@
+parameters:
+	ignoreErrors:
+		-
+			message: '#^Cannot access offset ''region'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: Bridge/Doctrine/DoctrineObjectStore.php
+
+		-
+			message: '#^Cannot cast mixed to string\.$#'
+			identifier: cast.string
+			count: 1
+			path: Bridge/Doctrine/DoctrineObjectStore.php
+
+		-
+			message: '#^Method Omnisearch\\Bridge\\Doctrine\\DoctrineObjectStore\:\:load\(\) should return list\<object\> but returns list\.$#'
+			identifier: return.type
+			count: 1
+			path: Bridge/Doctrine/DoctrineObjectStore.php
+
+		-
+			message: '#^Parameter \#1 \$array of function array_filter expects array, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: Bridge/Doctrine/DoctrineObjectStore.php
+
+		-
+			message: '#^Parameter \#1 \$cacheRegion of method Doctrine\\ORM\\AbstractQuery\:\:setCacheRegion\(\) expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: Bridge/Doctrine/DoctrineObjectStore.php
+
+		-
+			message: '#^Parameter \#1 \$class of method Doctrine\\Persistence\\ManagerRegistry\:\:getManagerForClass\(\) expects class\-string, string given\.$#'
+			identifier: argument.type
+			count: 1
+			path: Bridge/Doctrine/DoctrineObjectStore.php
+
+		-
+			message: '#^Parameter \#1 \$object of method Omnisearch\\Bridge\\Doctrine\\DoctrineObjectStore\:\:identify\(\) expects object, mixed given\.$#'
+			identifier: argument.type
+			count: 3
+			path: Bridge/Doctrine/DoctrineObjectStore.php
+
+		-
+			message: '#^Method Omnisearch\\Bridge\\Doctrine\\IndexListener\:\:postPersist\(\) has parameter \$args with generic class Doctrine\\Persistence\\Event\\LifecycleEventArgs but does not specify its types\: TObjectManager$#'
+			identifier: missingType.generics
+			count: 1
+			path: Bridge/Doctrine/IndexListener.php
+
+		-
+			message: '#^Method Omnisearch\\Bridge\\Doctrine\\IndexListener\:\:postRemove\(\) has parameter \$args with generic class Doctrine\\Persistence\\Event\\LifecycleEventArgs but does not specify its types\: TObjectManager$#'
+			identifier: missingType.generics
+			count: 1
+			path: Bridge/Doctrine/IndexListener.php
+
+		-
+			message: '#^Method Omnisearch\\Bridge\\Doctrine\\IndexListener\:\:postUpdate\(\) has parameter \$args with generic class Doctrine\\Persistence\\Event\\LifecycleEventArgs but does not specify its types\: TObjectManager$#'
+			identifier: missingType.generics
+			count: 1
+			path: Bridge/Doctrine/IndexListener.php
+
+		-
+			message: '#^Method Omnisearch\\Bridge\\Doctrine\\IndexListener\:\:preRemove\(\) has parameter \$args with generic class Doctrine\\Persistence\\Event\\LifecycleEventArgs but does not specify its types\: TObjectManager$#'
+			identifier: missingType.generics
+			count: 1
+			path: Bridge/Doctrine/IndexListener.php
+
+		-
+			message: '#^Argument of an invalid type mixed supplied for foreach, only iterables are supported\.$#'
+			identifier: foreach.nonIterable
+			count: 1
+			path: Bridge/Symfony/Command/SchemaCommand.php
+
+		-
+			message: '#^Parameter \#1 \$indexOrClass of method Omnisearch\\ORM\\Manager\:\:classMetadata\(\) expects object\|string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: Bridge/Symfony/Command/SchemaCommand.php
+
+		-
+			message: '#^Possibly invalid array key type mixed\.$#'
+			identifier: offsetAccess.invalidOffset
+			count: 1
+			path: Bridge/Symfony/Command/SchemaCommand.php
+
+		-
+			message: '#^Argument of an invalid type mixed supplied for foreach, only iterables are supported\.$#'
+			identifier: foreach.nonIterable
+			count: 1
+			path: Bridge/Symfony/OmnisearchBundle.php
+
+		-
+			message: '#^Call to function is_subclass_of\(\) with ''Omnisearch\\\\Memory\\\\MemoryDriverFactory'' and ''Omnisearch\\\\DBAL\\\\DriverFactory'' will always evaluate to true\.$#'
+			identifier: function.alreadyNarrowedType
+			count: 1
+			path: Bridge/Symfony/OmnisearchBundle.php
+
+		-
+			message: '#^Cannot access offset ''DoctrineBundle'' on array\|bool\|float\|int\|string\|UnitEnum\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: Bridge/Symfony/OmnisearchBundle.php
+
+		-
+			message: '#^Cannot access offset ''driver'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: Bridge/Symfony/OmnisearchBundle.php
+
+		-
+			message: '#^Cannot access offset ''options'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: Bridge/Symfony/OmnisearchBundle.php
+
+		-
+			message: '#^Cannot call method getConfiguration\(\) on Symfony\\Component\\DependencyInjection\\Extension\\ExtensionInterface\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: Bridge/Symfony/OmnisearchBundle.php
+
+		-
+			message: '#^Parameter \#1 \$array of function array_key_first expects array, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: Bridge/Symfony/OmnisearchBundle.php
+
+		-
+			message: '#^Parameter \#1 \$config of static method Omnisearch\\Bridge\\Symfony\\OmnisearchBundle\:\:metadata\(\) expects array\{mappings\?\: list\<string\>\}, array given\.$#'
+			identifier: argument.type
+			count: 1
+			path: Bridge/Symfony/OmnisearchBundle.php
+
+		-
+			message: '#^Parameter \#1 \$configuration of method Symfony\\Component\\Config\\Definition\\Processor\:\:processConfiguration\(\) expects Symfony\\Component\\Config\\Definition\\ConfigurationInterface, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: Bridge/Symfony/OmnisearchBundle.php
+
+		-
+			message: '#^Parameter \#1 \$directories of static method Omnisearch\\Mapping\\AttributeLoader\:\:scan\(\) expects list\<string\>, array\<mixed\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: Bridge/Symfony/OmnisearchBundle.php
+
+		-
+			message: '#^Parameter \#1 \$filename of function is_dir expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: Bridge/Symfony/OmnisearchBundle.php
+
+		-
+			message: '#^Parameter \#1 \$resource of class Symfony\\Component\\Config\\Resource\\DirectoryResource constructor expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: Bridge/Symfony/OmnisearchBundle.php
+
+		-
+			message: '#^Parameter \#2 \.\.\.\$arrays of function array_diff expects array, array\|bool\|float\|int\|string\|UnitEnum\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: Bridge/Symfony/OmnisearchBundle.php
+
+		-
+			message: '#^Possibly invalid array key type mixed\.$#'
+			identifier: offsetAccess.invalidOffset
+			count: 1
+			path: Bridge/Symfony/OmnisearchBundle.php
+
+		-
+			message: '#^Anonymous function has an unused use \$onError\.$#'
+			identifier: closure.unusedUse
+			count: 1
+			path: DBAL/Batch.php
+
+		-
+			message: '#^Anonymous function has an unused use \$sent\.$#'
+			identifier: closure.unusedUse
+			count: 1
+			path: DBAL/Batch.php
+
+		-
+			message: '#^Negated boolean expression is always true\.$#'
+			identifier: booleanNot.alwaysTrue
+			count: 1
+			path: DBAL/Batch.php
+
+		-
+			message: '#^Unreachable statement \- code above always terminates\.$#'
+			identifier: deadCode.unreachable
+			count: 1
+			path: DBAL/Batch.php
+
+		-
+			message: '#^Cannot cast mixed to string\.$#'
+			identifier: cast.string
+			count: 2
+			path: DBAL/Filter.php
+
+		-
+			message: '#^Match expression does not handle remaining value\: string$#'
+			identifier: match.unhandled
+			count: 1
+			path: DBAL/Filter.php
+
+		-
+			message: '#^Parameter \#1 \$array \(list\<bool\|float\|int\|string\>\) of array_values is already a list, call has no effect\.$#'
+			identifier: arrayValues.list
+			count: 2
+			path: DBAL/Filter.php
+
+		-
+			message: '#^Parameter \#1 \$callback of function array_map expects \(callable\(mixed\)\: mixed\)\|null, ''strval'' given\.$#'
+			identifier: argument.type
+			count: 4
+			path: DBAL/Filter.php
+
+		-
+			message: '#^Parameter \#2 \$array of function array_map expects array, mixed given\.$#'
+			identifier: argument.type
+			count: 2
+			path: DBAL/Filter.php
+
+		-
+			message: '#^Method Omnisearch\\DBAL\\Hit\:\:matchedTokens\(\) should return list\<string\> but returns list\.$#'
+			identifier: return.type
+			count: 1
+			path: DBAL/Hit.php
+
+		-
+			message: '#^Cannot call method getExtension\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: Mapping/AttributeLoader.php
+
+		-
+			message: '#^Cannot call method getPathname\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: Mapping/AttributeLoader.php
+
+		-
+			message: '#^Parameter \#1 \$filename of function file_get_contents expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: Mapping/AttributeLoader.php
+
+		-
+			message: '#^Parameter \#1 \$callback of function array_map expects \(callable\(mixed\)\: mixed\)\|null, Closure\(array\<string, mixed\>\)\: Omnisearch\\Mapping\\FieldMetadata given\.$#'
+			identifier: argument.type
+			count: 1
+			path: Mapping/ClassMetadata.php
+
+		-
+			message: '#^Parameter \#1 \$class of class Omnisearch\\Mapping\\ClassMetadata constructor expects class\-string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: Mapping/ClassMetadata.php
+
+		-
+			message: '#^Parameter \#2 \$array of function array_map expects array, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: Mapping/ClassMetadata.php
+
+		-
+			message: '#^Parameter \#2 \$index of class Omnisearch\\Mapping\\ClassMetadata constructor expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: Mapping/ClassMetadata.php
+
+		-
+			message: '#^Parameter \#3 \$connection of class Omnisearch\\Mapping\\ClassMetadata constructor expects string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: Mapping/ClassMetadata.php
+
+		-
+			message: '#^Parameter \#4 \$fields of class Omnisearch\\Mapping\\ClassMetadata constructor expects array\<string, Omnisearch\\Mapping\\FieldMetadata\>, array\<Omnisearch\\Mapping\\FieldMetadata\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: Mapping/ClassMetadata.php
+
+		-
+			message: '#^Parameter \#5 \$options of class Omnisearch\\Mapping\\ClassMetadata constructor expects array\<string, mixed\>, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: Mapping/ClassMetadata.php
+
+		-
+			message: '#^Method Omnisearch\\Mapping\\FieldMetadata\:\:toArray\(\) should return array\<string, mixed\> but returns array\<mixed\>\.$#'
+			identifier: return.type
+			count: 1
+			path: Mapping/FieldMetadata.php
+
+		-
+			message: '#^Parameter \#1 \$name of class Omnisearch\\Mapping\\FieldMetadata constructor expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: Mapping/FieldMetadata.php
+
+		-
+			message: '#^Cannot cast mixed to string\.$#'
+			identifier: cast.string
+			count: 1
+			path: Memory/Identity.php
+
+		-
+			message: '#^Cannot cast mixed to string\.$#'
+			identifier: cast.string
+			count: 2
+			path: Memory/MemoryDriver.php
+
+		-
+			message: '#^Possibly invalid array key type mixed\.$#'
+			identifier: offsetAccess.invalidOffset
+			count: 1
+			path: Memory/MemoryDriver.php
+
+		-
+			message: '#^Property Omnisearch\\Memory\\MemoryDriver\:\:\$indexes \(array\<string, array\<string, array\<string, mixed\>\>\>\) does not accept array\<string, array\<array\<string, mixed\>\>\>\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: Memory/MemoryDriver.php
+
+		-
+			message: '#^Method Omnisearch\\ORM\\PropertyReader\:\:items\(\) has parameter \$value with no value type specified in iterable type iterable\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: ORM/PropertyReader.php
+
+		-
+			message: '#^Method Omnisearch\\ORM\\Result\:\:facets\(\) should return array\<string, array\{field\: string, counts\: array\<string, array\{value\: string, count\: int, checked\: bool\}\>, extra\: array\<string, mixed\>\}\> but returns array\<string, array\{field\: string, counts\: array\<string, array\<string, mixed\>\>, extra\: array\<string, mixed\>\}\>\.$#'
+			identifier: return.type
+			count: 1
+			path: ORM/Result.php
+
+		-
+			message: '#^Method Omnisearch\\ORM\\Result\:\:facetsOf\(\) has parameter \$checked with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: ORM/Result.php
+
+		-
+			message: '#^Offset ''value'' on array\{value\: string, count\: int, highlighted\?\: string\} on left side of \?\? always exists and is not nullable\.$#'
+			identifier: nullCoalesce.offset
+			count: 2
+			path: ORM/Result.php
+
+		-
+			message: '#^Parameter \#2 \$haystack of function in_array expects array, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: ORM/Result.php
+
+		-
+			message: '#^Possibly invalid array key type mixed\.$#'
+			identifier: offsetAccess.invalidOffset
+			count: 2
+			path: ORM/Result.php
+
+		-
+			message: '#^Cannot cast mixed to float\.$#'
+			identifier: cast.double
+			count: 1
+			path: ORM/Transformer.php
+
+		-
+			message: '#^Cannot cast mixed to int\.$#'
+			identifier: cast.int
+			count: 2
+			path: ORM/Transformer.php
+
+		-
+			message: '#^Cannot cast mixed to string\.$#'
+			identifier: cast.string
+			count: 1
+			path: ORM/Transformer.php
+
+		-
+			message: '#^Parameter \#1 \$callback of function array_map expects \(callable\(mixed\)\: mixed\)\|null, ''floatval'' given\.$#'
+			identifier: argument.type
+			count: 1
+			path: ORM/Transformer.php
+
+		-
+			message: '#^Cannot access offset ''facets'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 2
+			path: Tests/BareTest.php
+
+		-
+			message: '#^Cannot access offset ''fields'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: Tests/BareTest.php
+
+		-
+			message: '#^Cannot access offset ''filtered'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: Tests/BareTest.php
+
+		-
+			message: '#^Cannot access offset ''found'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: Tests/BareTest.php
+
+		-
+			message: '#^Cannot access offset ''infix'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 2
+			path: Tests/BareTest.php
+
+		-
+			message: '#^Cannot access offset ''loaded'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 4
+			path: Tests/BareTest.php
+
+		-
+			message: '#^Cannot access offset ''matched'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 2
+			path: Tests/BareTest.php
+
+		-
+			message: '#^Cannot access offset ''objects'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 2
+			path: Tests/BareTest.php
+
+		-
+			message: '#^Cannot access offset ''schema'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: Tests/BareTest.php
+
+		-
+			message: '#^Cannot access offset ''sent'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: Tests/BareTest.php
+
+		-
+			message: '#^Cannot access offset ''status'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: Tests/BareTest.php
+
+		-
+			message: '#^Cannot access offset ''symbols'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 4
+			path: Tests/BareTest.php
+
+		-
+			message: '#^Cannot access offset ''tags'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: Tests/BareTest.php
+
+		-
+			message: '#^Cannot access offset 0 on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: Tests/BareTest.php
+
+		-
+			message: '#^Method Omnisearch\\Tests\\BareTest\:\:bare\(\) has parameter \$arguments with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: Tests/BareTest.php
+
+		-
+			message: '#^Method Omnisearch\\Tests\\BareTest\:\:bare\(\) should return array\<string, mixed\> but returns array\<mixed\>\.$#'
+			identifier: return.type
+			count: 1
+			path: Tests/BareTest.php
+
+		-
+			message: '#^Parameter \#1 \$array of function array_values expects array, array\|false given\.$#'
+			identifier: argument.type
+			count: 2
+			path: Tests/BareTest.php
+
+		-
+			message: '#^Parameter \#1 \$command of function proc_open expects list\<string\>\|string, non\-empty\-array given\.$#'
+			identifier: argument.type
+			count: 1
+			path: Tests/BareTest.php
+
+		-
+			message: '#^Parameter \#2 \$array of function preg_grep expects array, mixed given\.$#'
+			identifier: argument.type
+			count: 2
+			path: Tests/BareTest.php
+
+		-
+			message: '#^Parameter \#2 \$array of static method PHPUnit\\Framework\\Assert\:\:assertArrayNotHasKey\(\) expects array\<mixed\>\|ArrayAccess\<\(int\|string\), mixed\>, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: Tests/BareTest.php
+
+		-
+			message: '#^Parameter \#2 \$haystack of static method PHPUnit\\Framework\\Assert\:\:assertContains\(\) expects iterable, mixed given\.$#'
+			identifier: argument.type
+			count: 2
+			path: Tests/BareTest.php
+
+		-
+			message: '#^Call to function method_exists\(\) with Doctrine\\ORM\\Configuration and ''enableNativeLazyObj…'' will always evaluate to true\.$#'
+			identifier: function.alreadyNarrowedType
+			count: 1
+			path: Tests/Bridge/DoctrineTest.php
+
+		-
+			message: '#^Cannot access property \$document on Omnisearch\\DBAL\\Hit\|null\.$#'
+			identifier: property.nonObject
+			count: 2
+			path: Tests/Bridge/DoctrineTest.php
+
+		-
+			message: '#^Parameter \#1 \$callback of function array_map expects \(callable\(object\)\: mixed\)\|null, Closure\(Omnisearch\\Tests\\Fixtures\\Article\)\: string given\.$#'
+			identifier: argument.type
+			count: 1
+			path: Tests/Bridge/DoctrineTest.php
+
+		-
+			message: '#^Parameter \#1 \$object of method Doctrine\\ORM\\EntityManager\:\:remove\(\) expects object, Omnisearch\\Tests\\Fixtures\\Article\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: Tests/Bridge/DoctrineTest.php
+
+		-
+			message: '#^Access to an undefined property object\:\:\$note\.$#'
+			identifier: property.notFound
+			count: 2
+			path: Tests/Bridge/OmnisearchBundleTest.php
+
+		-
+			message: '#^Call to an undefined method object\:\:all\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: Tests/Bridge/OmnisearchBundleTest.php
+
+		-
+			message: '#^Call to an undefined method object\:\:create\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: Tests/Bridge/OmnisearchBundleTest.php
+
+		-
+			message: '#^Call to an undefined method object\:\:driverName\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: Tests/Bridge/OmnisearchBundleTest.php
+
+		-
+			message: '#^Call to an undefined method object\:\:index\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: Tests/Bridge/OmnisearchBundleTest.php
+
+		-
+			message: '#^Cannot access property \$index on mixed\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: Tests/Bridge/OmnisearchBundleTest.php
+
+		-
+			message: '#^Cannot access property \$metadata on mixed\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: Tests/Bridge/OmnisearchBundleTest.php
+
+		-
+			message: '#^Cannot call method ids\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: Tests/Bridge/OmnisearchBundleTest.php
+
+		-
+			message: '#^Cannot call method raw\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: Tests/Bridge/OmnisearchBundleTest.php
+
+		-
+			message: '#^Parameter \#1 \$array of function array_keys expects array, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: Tests/Bridge/OmnisearchBundleTest.php
+
+		-
+			message: '#^Parameter \#1 \$extension of method Symfony\\Component\\DependencyInjection\\ContainerBuilder\:\:registerExtension\(\) expects Symfony\\Component\\DependencyInjection\\Extension\\ExtensionInterface, Symfony\\Component\\DependencyInjection\\Extension\\ExtensionInterface\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: Tests/Bridge/OmnisearchBundleTest.php
+
+		-
+			message: '#^Access to an undefined property object\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Tests/Fixtures/ArrayStore.php
+
+		-
+			message: '#^Cannot cast mixed to string\.$#'
+			identifier: cast.string
+			count: 1
+			path: Tests/Fixtures/ArrayStore.php
+
+		-
+			message: '#^Property Omnisearch\\Tests\\Fixtures\\Article\:\:\$id \(int\|null\) is never assigned int so it can be removed from the property type\.$#'
+			identifier: property.unusedType
+			count: 1
+			path: Tests/Fixtures/Article.php
+
+		-
+			message: '#^Property Omnisearch\\Tests\\Fixtures\\Article\:\:\$tags \(Doctrine\\Common\\Collections\\Collection\<int, Omnisearch\\Tests\\Fixtures\\Tag\>\) does not accept Doctrine\\Common\\Collections\\ArrayCollection\<int\|string, Omnisearch\\Tests\\Fixtures\\Tag\>\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: Tests/Fixtures/Article.php
+
+		-
+			message: '#^Property Omnisearch\\Tests\\Fixtures\\Tag\:\:\$id \(int\|null\) is never assigned int so it can be removed from the property type\.$#'
+			identifier: property.unusedType
+			count: 1
+			path: Tests/Fixtures/Tag.php
+
+		-
+			message: '#^Property Omnisearch\\Tests\\Fixtures\\Tag\:\:\$id is never read, only written\.$#'
+			identifier: property.onlyWritten
+			count: 1
+			path: Tests/Fixtures/Tag.php
+
+		-
+			message: '#^Cannot access property \$connection on Omnisearch\\Mapping\\ClassMetadata\|null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: Tests/MappingTest.php
+
+		-
+			message: '#^Cannot access property \$fields on Omnisearch\\Mapping\\ClassMetadata\|null\.$#'
+			identifier: property.nonObject
+			count: 6
+			path: Tests/MappingTest.php
+
+		-
+			message: '#^Cannot access property \$index on Omnisearch\\Mapping\\ClassMetadata\|null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: Tests/MappingTest.php
+
+		-
+			message: '#^Cannot access property \$options on Omnisearch\\Mapping\\ClassMetadata\|null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: Tests/MappingTest.php
+
+		-
+			message: '#^Cannot call method facets\(\) on Omnisearch\\Mapping\\ClassMetadata\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: Tests/MappingTest.php
+
+		-
+			message: '#^Cannot call method toArray\(\) on Omnisearch\\Mapping\\ClassMetadata\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: Tests/MappingTest.php
+
+		-
+			message: '#^Parameter \#1 \$metadata of static method Omnisearch\\Mapping\\ClassMetadata\:\:fromArray\(\) expects array\<string, mixed\>, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: Tests/MappingTest.php
+
+		-
+			message: '#^Cannot call method matchedTokens\(\) on Omnisearch\\DBAL\\Hit\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: Tests/SearchTest.php
+
+		-
+			message: '#^Parameter \#1 \$callback of function array_map expects \(callable\(object\)\: mixed\)\|null, Closure\(Omnisearch\\Tests\\Fixtures\\Note\)\: string given\.$#'
+			identifier: argument.type
+			count: 2
+			path: Tests/SearchTest.php

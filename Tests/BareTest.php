@@ -52,7 +52,19 @@ final class BareTest extends TestCase
     /** @return array<string, mixed> */
     private static function bare(array $arguments = []): array
     {
-        $autoload = \dirname((string) (new \ReflectionClass(\Composer\Autoload\ClassLoader::class))->getFileName(), 2).'/autoload.php';
+        // The autoloader that knows omnisearch (and its tests' fixtures): not the
+        // one that loaded Composer's ClassLoader first (symfony/phpunit-bridge's
+        // own, in an application run by simple-phpunit).
+        $autoload = null;
+        foreach (\Composer\Autoload\ClassLoader::getRegisteredLoaders() as $vendor => $loader) {
+            if ($loader->findFile(Registry::class) && $loader->findFile(Fixtures\ArrayStore::class)) {
+                $autoload = $vendor.'/autoload.php';
+                break;
+            }
+        }
+        if (null === $autoload) {
+            self::markTestSkipped('No autoloader knows omnisearch\'s test fixtures.');
+        }
         $process = proc_open([\PHP_BINARY, __DIR__.'/../docker/harness/bin/bare', ...$arguments], [1 => ['pipe', 'w'], 2 => ['pipe', 'w']], $pipes, null, ['OMNISEARCH_AUTOLOAD' => $autoload] + getenv());
         self::assertIsResource($process);
         $out = (string) stream_get_contents($pipes[1]);

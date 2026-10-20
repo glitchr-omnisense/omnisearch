@@ -1,0 +1,43 @@
+# omniscient/omnisearch with every driver package, and a Typesense server:
+#
+#   docker compose run --rm omnisearch test        # every package's tests (the Typesense ones on the server below)
+#   docker compose run --rm omnisearch bare        # plain PHP: the memory engine, then Typesense - and what PHP loaded
+#   docker compose run --rm omnisearch bare --memory
+#   docker compose down                            # the server and the harness's volume gone
+#
+# Drivers come from GitHub (branch 1.x) unless their checkout sits under
+# OMNISEARCH_PLUGINS (set it to ../.. in .env when this core sits in the
+# workspace beside them): then that checkout is what runs.
+name: omnisearch-harness
+
+services:
+  omnisearch:
+    build: .
+    image: omniscient/omnisearch-harness
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      TYPESENSE_URL: http://typesense:8108
+      TYPESENSE_KEY: ${TYPESENSE_KEY:-xyz}
+    depends_on:
+      typesense:
+        condition: service_healthy
+    volumes:
+      - ..:/omnisearch/core
+      - ${OMNISEARCH_PLUGINS:-./plugins}:/omnisearch/plugins:ro
+      - harness:/harness
+
+  typesense:
+    image: typesense/typesense:30.0.rca41
+    command: --data-dir /data --api-key=${TYPESENSE_KEY:-xyz}
+    tmpfs:
+      - /data
+    healthcheck:
+      test: ["CMD", "bash", "-c", "exec 3<>/dev/tcp/127.0.0.1/8108 && printf 'GET /health HTTP/1.0\\r\\n\\r\\n' >&3 && grep -q '\"ok\":true' <&3"]
+      interval: 2s
+      timeout: 2s
+      retries: 30
+
+volumes:
+  harness:

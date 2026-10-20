@@ -1,0 +1,88 @@
+#!/usr/bin/env php
+<?php
+
+/*
+ * Omnisearch in plain PHP: no bundle, no container, no console. The
+ * registry built by hand; on the memory engine, notes (plain objects)
+ * indexed, searched, faceted, removed by the indexing rule; then, when
+ * omnisearch/typesense is installed and a server answers at TYPESENSE_URL,
+ * Doctrine entities (SQLite) indexed on flush in Typesense through
+ * glitchr/typesense-bundle's framework-free part, searched with infix and
+ * facets, loaded back, the collection dropped. Prints what happened and
+ * every class and file PHP loaded, as JSON.
+ *
+ *   bare            the memory engine, then Typesense
+ *   bare --memory   the memory engine only
+ */
+
+use Omnisearch\Bridge\Doctrine\DoctrineObjectStore;
+use Omnisearch\Bridge\Doctrine\IndexListener;
+use Omnisearch\Mapping\AttributeLoader;
+use Omnisearch\Mapping\MetadataRegistry;
+use Omnisearch\Memory\MemoryDriverFactory;
+use Omnisearch\ORM\Indexer;
+use Omnisearch\ORM\Manager;
+use Omnisearch\ORM\Query;
+use Omnisearch\Registry;
+use Omnisearch\Tests\Bridge\DoctrineTest;
+use Omnisearch\Tests\Fixtures\Article;
+use Omnisearch\Tests\Fixtures\ArrayStore;
+use Omnisearch\Tests\Fixtures\Note;
+use Omnisearch\Tests\Fixtures\Tag;
+use Omnisearch\Typesense\TypesenseDriverFactory;
+
+require getenv('OMNISEARCH_AUTOLOAD') ?: '/harness/vendor/autoload.php';
+
+$report = [];
+$loaded = fn () => ['symbols' => [...get_declared_classes(), ...get_declared_interfaces(), ...get_declared_traits()], 'files' => get_included_files()];
+
+// The memory engine: plain objects, nothing else loaded.
+$store = new ArrayStore();
+$manager = new Manager(new Registry([new MemoryDriverFactory($store)], ['default' => ['driver' => 'memory']]), new MetadataRegistry([AttributeLoader::load(Note::class)]), $store);
+$manager->create();
+$indexer = new Indexer($manager);
+foreach ([new Note('1', 'Mount Fuji at dawn', 3, ['travel', 'japan']), new Note('2', 'Fujisan in music', 1, ['music', 'japan']), new Note('3', 'Ramen', 2, ['food'])] as $note) {
+    $store->add($note);
+    $indexer->persisted($note);
+}
+$report['memory']['sent'] = $indexer->flush();
+$result = $manager->finder(Note::class)->search((new Query('fuji'))->in('text')->facet('labels')->sortBy('rank'));
+$report['memory']['found'] = $result->found();
+$report['memory']['objects'] = array_map(fn (Note $n) => $n->text, $result->objects());
+$report['memory']['matched'] = $result->hit($result->objects()[0])->matchedTokens();
+$report['memory']['facets'] = array_map(fn ($c) => $c['count'], $result->facets()['labels']['counts']);
+$report['memory']['loaded'] = $loaded();
+
+if (!in_array('--memory', $argv, true) && class_exists(TypesenseDriverFactory::class) && getenv('TYPESENSE_URL')) {
+    $entityManager = DoctrineTest::entityManager();
+    $doctrine = new DoctrineObjectStore($entityManager);
+    $registry = new Registry([new TypesenseDriverFactory(null, $entityManager)], ['default' => ['driver' => 'typesense', 'options' => [
+        'url' => getenv('TYPESENSE_URL'), 'secret' => getenv('TYPESENSE_KEY') ?: 'xyz', 'prefix' => 'bare_'.bin2hex(random_bytes(3)).'_', 'options' => ['connection_timeout_seconds' => 2],
+    ]]]);
+    $search = new Manager($registry, new MetadataRegistry([AttributeLoader::load(Article::class)]), $doctrine);
+    $entityManager->getEventManager()->addEventListener(IndexListener::EVENTS, new IndexListener(new Indexer($search, function (\Throwable $e) use (&$report) { $report['typesense']['errors'][] = $e->getMessage(); })));
+    $search->create();
+    try {
+        $entityManager->persist(new Article('Mount Fuji', new DateTimeImmutable('2026-01-01'), new Tag('Travels', 'voyages')));
+        $entityManager->persist(new Article('Fujisan in music', new DateTimeImmutable('2026-03-01'), new Tag('Music', 'en-musique')));
+        $entityManager->persist(new Article('Ramen', new DateTimeImmutable('2026-02-01'), new Tag('Food', 'a-table')));
+        $entityManager->flush();
+        $entityManager->clear();
+
+        $finder = $search->finder(Article::class);
+        $result = $finder->search((new Query('fuji'))->in('title')->sortBy('publishedAt', 'desc')->facet('tags', 'audio'));
+        $report['typesense']['schema'] = $search->connection(Article::class)->schema($search->classMetadata(Article::class));
+        $report['typesense']['found'] = $result->found();
+        $report['typesense']['objects'] = array_map(fn (Article $a) => $a->getTitle(), $result->objects());
+        $report['typesense']['matched'] = $result->objects() ? $result->hit($result->objects()[0])->matchedTokens() : [];
+        $report['typesense']['facets'] = array_map(fn ($f) => array_map(fn ($c) => $c['count'], $f['counts']), $result->facets());
+        $report['typesense']['infix'] = $finder->raw((new Query('isa'))->in('title')->option('infix', 'always')->option('num_typos', 0))->found;
+        $report['typesense']['filtered'] = $finder->raw((new Query())->in('title')->where('tags', 'a-table'))->found;
+        $report['typesense']['status'] = $result->status();
+    } finally {
+        $search->drop();
+    }
+    $report['typesense']['loaded'] = $loaded();
+}
+
+echo json_encode($report, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE), "\n";

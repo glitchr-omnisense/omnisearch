@@ -24,6 +24,7 @@
         "symfony/http-kernel": "^7.0|^8.0"
     },
     "suggest": {
+        "phpunit/phpunit": "Omnisearch\\Testing\\DriverContractTests: the Driver contract as tests, run by every driver package's tests",
         "omnisearch/typesense": "Typesense: the driver, over glitchr/typesense-bundle",
         "doctrine/orm": "Doctrine's entities behind the documents (Omnisearch\\Bridge\\Doctrine): loaded back from a search, indexed on Doctrine's events",
         "symfony/config": "In a Symfony application: the configuration of Omnisearch\\Bridge\\Symfony\\OmnisearchBundle",

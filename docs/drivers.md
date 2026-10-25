@@ -29,7 +29,11 @@ and a `DriverFactory` (`name()`, `create(array $options)`) makes it from a conne
 - A `Request`'s `Filter`s, facets, sort and page are the same for all; `options` hold what only one
   engine knows, by that engine's names; a driver reads its own and ignores the rest.
 - `search()` answers a `Response` with a status and the engine's message when the engine refuses or
-  cannot be reached.
+  cannot be reached - never an exception, and never an empty message.
+- A write (`create()`, `drop()`, `index()`, `remove()`) the engine refuses, or that cannot reach it,
+  throws an `Omnisearch\Exception\DriverException`, its code the engine's HTTP status (503 when
+  there was none), the engine library's exception as its previous one. Creating an index that is
+  there, dropping one that is not, removing an unknown identifier are no errors.
 
 ## The memory engine
 
@@ -45,3 +49,58 @@ its tests on recorded answers of the engine and, when a server can run in Docker
 `BareTest` on it. Add it to `docker/harness/plugins.php` and to `OmnisearchBundle::FACTORIES`;
 when the engine has its own Symfony bundle that should host the indexes, a `Bridge\Symfony\Host`
 and an entry of `OmnisearchBundle::HOSTS`.
+
+## Conformance suite
+
+`Omnisearch\Testing\DriverContractTests` is the `Driver` contract as PHPUnit tests: every driver
+package runs it in a `Tests/<Name>ContractTest.php` of its own (the memory engine in this core's
+`Tests/MemoryDriverContractTest.php`). The test case gives the factory, the options of a working
+connection, and the objects to index - of a class declaring an index with the fields `title`
+(`Type::STRING`), `rank` (`Type::INT`, sort) and `labels` (`Type::STRINGS`, facet).
+`Omnisearch\Testing\ContractDocument` is one, for an engine that indexes any object; a driver that
+indexes entities gives an entity of its own:
+
+```php
+use Omnisearch\Testing\DriverContractTests;
+
+final class MemoryDriverContractTest extends TestCase
+{
+    use DriverContractTests;
+
+    protected function factory(): DriverFactory
+    {
+        return new MemoryDriverFactory();
+    }
+
+    protected function options(): array
+    {
+        return [];
+    }
+
+    protected function document(string $id, string $title, int $rank, array $labels): object
+    {
+        return new ContractDocument($id, $title, $rank, $labels);
+    }
+}
+```
+
+It indexes three documents in an index of its own, dropped after each test (give a random
+`prefix` on a shared server), and checks:
+
+| | |
+|---|---|
+| Factory and registry | the factory names its engine; the `Registry` connects it from `{driver, options}`, once |
+| Options | each of `requiredOptions()` left out is an `InvalidConfigException` naming it |
+| Index | created where it is not (twice: no error), described by `schema()`, dropped with its documents (twice: no error); a search of an index not there answers a failed `Response` - a status, a message |
+| Words | a word's beginning finds the documents, in the fields asked, with the words they matched; an empty term finds them all |
+| Filters | `=`, `!=`, `in`, `not in` on a list field (holds / holds not), `<`, `<=`, `>`, `>=`, `=` on a number, with a term |
+| Sort and pages | ascending, descending; `perPage` and `page`, `found` counting every page, nothing past the last |
+| Facets | the values of the documents found, counted, the most frequent first |
+| Writes | a write replaces the document of its identifier; `remove()` forgets it, an unknown identifier is no error |
+| An engine that does not answer | `unreachableOptions()` (null for an engine in the process): a search answers a failed `Response` with a message, a write throws an `OmnisearchException` |
+
+`metadata()` (by default the index the documents' class declares) and `requiredOptions()`,
+`unreachableOptions()` are hooks with defaults. An engine reached over the network runs it beside
+a server (omnisearch/typesense: the harness's Typesense container) - the tests that need none
+(factory, options, mapping, an engine that does not answer) run anyway.
+

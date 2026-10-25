@@ -69,6 +69,9 @@ bridge is.
   schemas are those its server held, byte for byte, its 628 documents and its blog's searches
   (pages, terms, the tags facet) unchanged; the entities load in its Laravel twin with nothing of
   Symfony.
+- The conformance suite (`Omnisearch\Testing\DriverContractTests`, [docs/drivers.md](docs/drivers.md#conformance-suite)):
+  green on 2026-10-25 for the memory engine (offline) and omnisearch/typesense beside a Typesense
+  30.0 container (`typesense/typesense:30.0.rca41`) - 48 tests in the workspace, none skipped.
 - Not verified: an engine other than Typesense and memory; Doctrine's MongoDB ODM (the store
   falls back on `findBy()`, never run); Laravel (no bridge yet: one is written when an application
   under Laravel indexes).

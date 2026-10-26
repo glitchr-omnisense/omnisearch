@@ -50,12 +50,19 @@ bridge is.
 
 ## Documentation
 
+- [Overview: engines and layers](docs/index.md)
 - [Installation, in plain PHP](docs/installation.md)
+- [Symfony](docs/symfony.md) and [Laravel](docs/laravel.md)
+- [Concepts: every class of the mapping, the DBAL and the ORM](docs/concepts.md)
 - [Mapping: indexes and fields](docs/mapping.md)
 - [Searching: queries, results, facets](docs/searching.md)
-- [Drivers: the contract, the memory engine, writing one](docs/drivers.md)
-- [Symfony](docs/symfony.md)
+- [Indexing: the rule, Doctrine's events, failures](docs/indexing.md)
+- [Configuration reference](docs/configuration.md)
+- [Errors](docs/errors.md)
+- [Testing, and the conformance suite](docs/testing.md)
 - [The Docker harness](docs/harness.md)
+- [Drivers: the contract, the memory engine, writing one](docs/drivers.md)
+- [Verified, and not](docs/verified.md)
 
 ## Verified, and not
 

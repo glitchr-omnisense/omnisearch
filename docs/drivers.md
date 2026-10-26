@@ -1,6 +1,6 @@
 ---
 title: Drivers
-order: 4
+order: 80
 ---
 
 # Drivers
@@ -40,7 +40,7 @@ and a `DriverFactory` (`name()`, `create(array $options)`) makes it from a conne
 `Omnisearch\Memory\MemoryDriver` (`memory`) keeps the documents in the process: a word of the term
 matches a word of a field that starts with it (or holds it, in an infix field), the filters,
 facets, sort and pages of a Request work as documented. For tests, and an application's first
-steps; nothing outlives the process.
+steps; nothing outlives the process. Its whole behaviour: [Concepts](concepts.md#the-memory-engine).
 
 ## Writing one
 
@@ -50,6 +50,75 @@ its tests on recorded answers of the engine and, when a server can run in Docker
 when the engine has its own Symfony bundle that should host the indexes, a `Bridge\Symfony\Host`
 and an entry of `OmnisearchBundle::HOSTS`.
 
+The shape of a driver for an engine with an HTTP API, holding plain documents:
+
+```php
+namespace Omnisearch\Acme;
+
+use Omnisearch\DBAL\{Driver, DriverFactory, Request, Response, Hit};
+use Omnisearch\Exception\{DriverException, InvalidConfigException};
+use Omnisearch\Mapping\ClassMetadata;
+use Omnisearch\ORM\{ObjectStore, Transformer};
+
+final class AcmeDriverFactory implements DriverFactory
+{
+    public function __construct(private readonly ObjectStore $store) {}
+
+    public function name(): string
+    {
+        return 'acme';
+    }
+
+    public function create(array $options): Driver
+    {
+        if (empty($options['url'])) {
+            throw new InvalidConfigException('An Acme connection needs the option "url".');
+        }
+
+        return new AcmeDriver(new AcmeClient($options['url']), new Transformer($this->store));
+    }
+}
+
+final class AcmeDriver implements Driver
+{
+    public function __construct(private readonly AcmeClient $client, private readonly Transformer $transformer) {}
+
+    public function index(ClassMetadata $metadata, object ...$objects): void
+    {
+        $documents = array_map(fn (object $o) => $this->transformer->document($metadata, $o), $objects);
+        try {
+            $this->client->upsert($metadata->index, $documents);
+        } catch (AcmeError $e) {
+            throw new DriverException('Acme: '.$e->getMessage(), $e->status ?: 503, $e);
+        }
+    }
+
+    public function search(ClassMetadata $metadata, Request $request): Response
+    {
+        try {
+            $answer = $this->client->search($metadata->index, /* the request in Acme's terms */);
+        } catch (AcmeError $e) {
+            return Response::failed($e->status ?: 503, $e->getMessage() ?: 'Acme not reached.');
+        }
+
+        return new Response($answer['total'], $request->page, array_map(
+            fn (array $hit) => new Hit((string) $hit['id'], $hit['document'], $hit['highlights'] ?? [], $hit['score'] ?? null, $hit),
+            $answer['hits'],
+        ));
+    }
+
+    // create(), drop(), schema(), remove(): the same rules
+}
+```
+
+(`AcmeClient` and `AcmeError` stand for the engine's own library.) Every exception a driver lets
+out should be an `OmnisearchException`; catch the engine library's transport errors too, not only
+its API errors - the client library may throw the HTTP client's own exceptions.
+
+An application can also write a driver of its own without a package: under Symfony, any service
+implementing `DriverFactory` is tagged `omnisearch.driver_factory` and its `name()` can be used as a
+connection's `driver`.
+
 ## Conformance suite
 
 `Omnisearch\Testing\DriverContractTests` is the `Driver` contract as PHPUnit tests: every driver
@@ -58,31 +127,7 @@ package runs it in a `Tests/<Name>ContractTest.php` of its own (the memory engin
 connection, and the objects to index - of a class declaring an index with the fields `title`
 (`Type::STRING`), `rank` (`Type::INT`, sort) and `labels` (`Type::STRINGS`, facet).
 `Omnisearch\Testing\ContractDocument` is one, for an engine that indexes any object; a driver that
-indexes entities gives an entity of its own:
-
-```php
-use Omnisearch\Testing\DriverContractTests;
-
-final class MemoryDriverContractTest extends TestCase
-{
-    use DriverContractTests;
-
-    protected function factory(): DriverFactory
-    {
-        return new MemoryDriverFactory();
-    }
-
-    protected function options(): array
-    {
-        return [];
-    }
-
-    protected function document(string $id, string $title, int $rank, array $labels): object
-    {
-        return new ContractDocument($id, $title, $rank, $labels);
-    }
-}
-```
+indexes entities gives an entity of its own.
 
 It indexes three documents in an index of its own, dropped after each test (give a random
 `prefix` on a shared server), and checks:
@@ -102,5 +147,10 @@ It indexes three documents in an index of its own, dropped after each test (give
 `metadata()` (by default the index the documents' class declares) and `requiredOptions()`,
 `unreachableOptions()` are hooks with defaults. An engine reached over the network runs it beside
 a server (omnisearch/typesense: the harness's Typesense container) - the tests that need none
-(factory, options, mapping, an engine that does not answer) run anyway.
+(factory, options, mapping, an engine that does not answer) run anyway. Each test, its documents
+and its assertions: [Testing](testing.md#the-conformance-suite).
 
+The suite proves the contract with the dependencies the package's tests install; an engine
+library that picks its HTTP client at run time (php-http discovery) may behave otherwise in an
+application with another client installed - omnisearch/typesense does
+([searching](searching.md#when-the-engine-does-not-answer)).

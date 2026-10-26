@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Every driver package: its slug (omnisearch/<slug>, github.com/glitchr-studio/omnisearch-<slug>),
+ * Every driver package: its slug (omnisearch/<slug>, github.com/glitchr-omnisense/omnisearch-<slug>),
  * its tests' namespace and its factory class.
  */
 return [

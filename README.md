@@ -1,4 +1,4 @@
-# omniscient/omnisearch
+# omnisense/omnisearch
 
 Search the way Doctrine is for SQL, **whatever the engine**: the classes declare their index by
 attributes, a manager hands out finders, a query is written once, the objects come back from the
@@ -27,7 +27,7 @@ packages of their own:
 
 | Package | Engine |
 |---|---|
-| [`omnisearch/typesense`](https://github.com/glitchr-studio/omnisearch-typesense) | [Typesense](https://typesense.org), over [`glitchr/typesense-bundle`](https://github.com/glitchr-studio/typesense-bundle)'s framework-free part: infix search, matched tokens, facets, discriminator sub-collections; in Symfony, that bundle hosts the indexes |
+| [`omnisearch/typesense`](https://github.com/glitchr-omnisense/omnisearch-typesense) | [Typesense](https://typesense.org), over [`glitchr/typesense-bundle`](https://github.com/glitchr-studio/typesense-bundle)'s framework-free part: infix search, matched tokens, facets, discriminator sub-collections; in Symfony, that bundle hosts the indexes |
 | `Omnisearch\Memory` (here) | the PHP process itself: for tests and first steps |
 
 The shape comes from glitchr/typesense-bundle, whose DBAL request/response and ORM

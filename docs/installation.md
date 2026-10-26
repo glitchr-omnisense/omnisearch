@@ -6,7 +6,7 @@ order: 1
 # Installation, in plain PHP
 
 ```sh
-composer require omniscient/omnisearch omnisearch/typesense   # or the memory engine alone: omniscient/omnisearch
+composer require omnisense/omnisearch omnisearch/typesense   # or the memory engine alone: omnisense/omnisearch
 ```
 
 The whole thing by hand - no framework, no container:

@@ -1,4 +1,4 @@
-# omniscient/omnisearch with every driver package, and a Typesense server:
+# omnisense/omnisearch with every driver package, and a Typesense server:
 #
 #   docker compose run --rm omnisearch test        # every package's tests (the Typesense ones on the server below)
 #   docker compose run --rm omnisearch bare        # plain PHP: the memory engine, then Typesense - and what PHP loaded
@@ -13,7 +13,7 @@ name: omnisearch-harness
 services:
   omnisearch:
     build: .
-    image: omniscient/omnisearch-harness
+    image: omnisense/omnisearch-harness
     env_file:
       - path: .env
         required: false

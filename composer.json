@@ -1,9 +1,9 @@
 {
-    "name": "omniscient/omnisearch",
+    "name": "omnisense/omnisearch",
     "type": "library",
     "description": "Omnisearch: search the way Doctrine is for SQL, whatever the engine - indexes declared on the classes by attributes (#[Index], #[Field]), connections and drivers, requests and responses (DBAL), a manager, finders, queries, results and objects loaded back, the indexing rule (ORM); an in-memory engine, a Doctrine bridge and a Symfony bundle. Engines are packages of their own (omnisearch/typesense).",
     "keywords": ["search", "full-text", "orm", "dbal", "doctrine", "attributes", "typesense", "omnisearch"],
-    "homepage": "https://github.com/glitchr-studio/omnisearch",
+    "homepage": "https://github.com/glitchr-omnisense/omnisearch",
     "license": "MIT",
     "authors": [
         {
@@ -31,6 +31,9 @@
         "symfony/dependency-injection": "In a Symfony application: the services of Omnisearch\\Bridge\\Symfony\\OmnisearchBundle",
         "symfony/http-kernel": "In a Symfony application: Omnisearch\\Bridge\\Symfony\\OmnisearchBundle itself",
         "symfony/console": "In a Symfony application: the omnisearch:* commands"
+    },
+    "replace": {
+        "omniscient/omnisearch": "self.version"
     },
     "autoload": {
         "psr-4": {

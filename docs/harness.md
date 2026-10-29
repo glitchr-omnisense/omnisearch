@@ -50,7 +50,9 @@ The `omnisearch` service is given `TYPESENSE_URL=http://typesense:8108` and `TYP
   `https://github.com/glitchr-omnisense/omnisearch-<slug>.git` (branch 1.x);
 - `doctrine/orm`, `ext-pdo_sqlite`, and for the tests `doctrine/doctrine-bundle`,
   `symfony/framework-bundle`, `symfony/cache`, `config`, `console`, `dependency-injection`,
-  `http-kernel`, PHPUnit 11;
+  `http-client`, `http-kernel`, PHPUnit 11 - symfony/http-client so that php-http's discovery gives
+  typesense-php Symfony's PSR-18 client, as in an application, and the suite's unreachable-engine
+  test meets its `Psr18NetworkException`;
 - one PHPUnit suite per package (`core`, `typesense`).
 
 The files are rewritten only when they change. Composer installs when there is no `vendor/`, and

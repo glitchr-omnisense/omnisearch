@@ -183,9 +183,6 @@ if (!$result->ok()) {
 }
 ```
 
-> [!WARNING]
-> Known defect: on omnisearch/typesense with symfony/http-client installed, an unreachable Typesense makes `search()` throw `Symfony\Component\HttpClient\Psr18NetworkException` instead of answering a failed `Result`, where the contract says a search never throws ([omnisearch/typesense](https://github.com/glitchr-omnisense/omnisearch-typesense/blob/1.x/docs/index.md#errors)). Catch `\Throwable` around a search until it is fixed.
-
 ## Keeping the indexes in step
 
 Keeping the indexes in step with the objects - `Manager::index()`, the `Indexer` and Doctrine's

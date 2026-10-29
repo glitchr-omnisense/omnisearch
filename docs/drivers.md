@@ -152,5 +152,7 @@ and its assertions: [Testing](testing.md#the-conformance-suite).
 
 The suite proves the contract with the dependencies the package's tests install; an engine
 library that picks its HTTP client at run time (php-http discovery) may behave otherwise in an
-application with another client installed - omnisearch/typesense does
-([searching](searching.md#when-the-engine-does-not-answer)).
+application with another client installed: catch the PSR-18 interfaces
+(`Psr\Http\Client\ClientExceptionInterface`), not one client's classes, and install in the tests
+the client an application is likely to have - the harness installs symfony/http-client for
+omnisearch/typesense ([searching](searching.md#when-the-engine-does-not-answer)).

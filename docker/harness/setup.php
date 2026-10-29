@@ -55,6 +55,10 @@ $composer = [
         'symfony/config' => '^7.0|^8.0',
         'symfony/console' => '^7.0|^8.0',
         'symfony/dependency-injection' => '^7.0|^8.0',
+        // Installed so that php-http's discovery gives typesense-php Symfony's
+        // PSR-18 client, as in an application: its network failures are the
+        // PSR-18 interfaces' only, which a driver must catch.
+        'symfony/http-client' => '^7.0|^8.0',
         'symfony/http-kernel' => '^7.0|^8.0',
     ],
     'autoload-dev' => ['psr-4' => $tests],

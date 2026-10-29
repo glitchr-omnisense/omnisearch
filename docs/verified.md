@@ -57,6 +57,3 @@ the entities load in its Laravel twin with nothing of Symfony (README).
   ([known defect](concepts.md#doctrineobjectstore)).
 - Laravel: no bridge; the service provider of [Laravel](laravel.md) is the Laravel twin's shape,
   not a tested package.
-- An unreachable Typesense with symfony/http-client installed: `search()` throws
-  ([known defect](searching.md#when-the-engine-does-not-answer)). The harness's `composer.json`
-  requires no symfony/http-client, and there the suite's unreachable-engine test is green.

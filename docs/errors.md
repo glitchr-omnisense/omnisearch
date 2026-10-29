@@ -57,8 +57,10 @@ errors.
 > [!WARNING]
 > Known defect: `OmnisearchException` says it is "every exception of omnisearch and its drivers", but `Omnisearch\DBAL\Filter`'s constructor throws a plain `\InvalidArgumentException` (an unknown operator, `in`/`not in` without an array), and `TypesenseDriver::collection()` a plain `\LogicException` (an index the bundle does not know and no transformer to make it with).
 
-The Typesense client's own transport exceptions can also pass through on some installations:
-[searching](searching.md#when-the-engine-does-not-answer).
+A driver catches its engine library's transport exceptions whatever HTTP client the library was
+given: omnisearch/typesense catches the PSR-18 interfaces, so Symfony's `Psr18NetworkException`
+becomes a failed search or a `DriverException` too
+([searching](searching.md#when-the-engine-does-not-answer)).
 
 ## Failed searches
 

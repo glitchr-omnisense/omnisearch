@@ -92,6 +92,24 @@ final class SearchTest extends TestCase
         self::assertSame(0, $this->manager->finder('note')->raw(new Query('kyoto'))->found);
     }
 
+    /** On a manager with no store (the memory engine's installation), a removed object is still taken out of its index. */
+    public function testTheIndexingRuleWithoutAStore(): void
+    {
+        $manager = new Manager(new Registry([new MemoryDriverFactory()], ['default' => ['driver' => 'memory']]), MetadataRegistry::fromDirectories([__DIR__.'/Fixtures']));
+        $manager->create();
+        $indexer = new Indexer($manager);
+        $note = new Note('8', 'Nara deer');
+
+        $indexer->persisted($note);
+        $indexer->flush();
+        self::assertSame(['8'], $manager->finder('note')->raw(new Query('nara'))->ids());
+
+        $indexer->removing($note);
+        $indexer->removed($note);
+        self::assertSame(1, $indexer->flush(), 'the removal sent');
+        self::assertSame(0, $manager->finder('note')->raw(new Query('nara'))->found);
+    }
+
     public function testAnIndexerLimitedToOtherConnectionsLeavesThisOneAlone(): void
     {
         $indexer = new Indexer($this->manager, null, ['elsewhere']);

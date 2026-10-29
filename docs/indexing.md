@@ -56,11 +56,11 @@ $indexer = new Indexer($manager, function (\Throwable $e) use ($logger): void {
 });
 ```
 
-> [!WARNING]
-> Known defect: the Symfony bundle registers its `Indexer` without an `$onError` and has no option for one ([Symfony](symfony.md#indexing-on-doctrines-events)), so under the bundle a refused write is thrown out of `EntityManager::flush()`.
+The Symfony bundle gives its `Indexer` an `$onError` that logs, by its `on_index_error` option
+([Symfony](symfony.md#indexing-on-doctrines-events)); `throw` keeps the exception.
 
-> [!WARNING]
-> Known defect: `removing()` takes the identifier from the manager's store only. On a `Manager` built without an `ObjectStore`, nothing is taken and `removed()` queues nothing: the document stays in its index.
+`removing()` takes the identifier from the manager's store, or, on a `Manager` built without one,
+as the memory engine takes it (`Memory\Identity`: `getId()`, else a public `$id`).
 
 ## Some connections only
 

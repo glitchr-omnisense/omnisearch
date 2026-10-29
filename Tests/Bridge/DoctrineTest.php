@@ -8,6 +8,7 @@ use Doctrine\ORM\ORMSetup;
 use Doctrine\ORM\Tools\SchemaTool;
 use Omnisearch\Bridge\Doctrine\DoctrineObjectStore;
 use Omnisearch\Bridge\Doctrine\IndexListener;
+use Omnisearch\Mapping\AttributeLoader;
 use Omnisearch\Mapping\MetadataRegistry;
 use Omnisearch\Memory\MemoryDriverFactory;
 use Omnisearch\ORM\Indexer;
@@ -34,6 +35,38 @@ final class DoctrineTest extends TestCase
         (new SchemaTool($entityManager))->createSchema($entityManager->getMetadataFactory()->getAllMetadata());
 
         return $entityManager;
+    }
+
+    /** A composite identifier, joined by "-" (a value holding "-" too), identifies and loads back its entity. */
+    public function testAnEntityWithACompositeIdentifierIsLoadedBack(): void
+    {
+        if (!class_exists(EntityManager::class)) {
+            self::markTestSkipped('doctrine/orm is not installed.');
+        }
+        $configuration = ORMSetup::createAttributeMetadataConfig([\dirname(__DIR__).'/Composite'], true);
+        if (\PHP_VERSION_ID >= 80400 && method_exists($configuration, 'enableNativeLazyObjects')) {
+            $configuration->enableNativeLazyObjects(true);
+        }
+        $entityManager = new EntityManager(DriverManager::getConnection(['driver' => 'pdo_sqlite', 'memory' => true], $configuration), $configuration);
+        (new SchemaTool($entityManager))->createSchema($entityManager->getMetadataFactory()->getAllMetadata());
+        $store = new DoctrineObjectStore($entityManager);
+        $manager = new Manager(new Registry([new MemoryDriverFactory($store)], ['default' => ['driver' => 'memory']]), MetadataRegistry::fromDirectories([\dirname(__DIR__).'/Composite']), $store);
+        $manager->create();
+
+        $editions = [new \Omnisearch\Tests\Composite\Edition('978-2-07-036822-8', 1, 'Vol de nuit'), new \Omnisearch\Tests\Composite\Edition('978-2-07-036822-8', 2, 'Vol de nuit, reprinted'), new \Omnisearch\Tests\Composite\Edition('978-2-07', 36822, 'Not the same edition')];
+        foreach ($editions as $edition) {
+            $entityManager->persist($edition);
+        }
+        $entityManager->flush();
+        $manager->index(...$editions);
+        $entityManager->clear();
+
+        self::assertSame('978-2-07-036822-8-2', $store->identify($editions[1]));
+        $loaded = $store->load(AttributeLoader::load(\Omnisearch\Tests\Composite\Edition::class), ['978-2-07-036822-8-2', '978-2-07-36822', '978-2-07-036822-8-1']);
+        self::assertSame(['Vol de nuit, reprinted', 'Not the same edition', 'Vol de nuit'], array_map(static fn ($e) => $e->getTitle(), $loaded), 'each by its whole identifier, in the order asked');
+
+        $result = $manager->finder(\Omnisearch\Tests\Composite\Edition::class)->search(new Query('vol'));
+        self::assertCount(2, $result->objects(), 'the hits loaded back');
     }
 
     public function testEntitiesAreIndexedOnFlushFoundAndRemoved(): void

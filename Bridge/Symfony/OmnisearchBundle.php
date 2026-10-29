@@ -33,6 +33,7 @@ use function Symfony\Component\DependencyInjection\Loader\Configurator\tagged_it
  *         connections:
  *             default: { driver: typesense, options: { connection: default } }
  *         mappings: ['%kernel.project_dir%/src/Entity']     # the classes declaring an #[Index]; src/ by default
+ *         on_index_error: log                                # a write that fails during Doctrine's flush: log, throw, or a service id
  *
  *     public function __construct(Manager $search, Finder $blogArticle) {}
  *
@@ -72,6 +73,11 @@ final class OmnisearchBundle extends AbstractBundle
                     ->info('The directories whose classes declare an #[Index]: src/ when none is given.')
                     ->scalarPrototype()->end()
                 ->end()
+                ->scalarNode('on_index_error')
+                    ->defaultValue('log')
+                    ->cannotBeEmpty()
+                    ->info('A write an engine refuses, or cannot reach, during Doctrine\'s flush (after the database committed): "log" (the logger, the flush goes on), "throw" (out of EntityManager::flush()), or the id of a service called with the \Throwable.')
+                ->end()
             ->end();
     }
 
@@ -94,7 +100,7 @@ final class OmnisearchBundle extends AbstractBundle
     }
 
     /**
-     * @param array{default_connection: ?string, connections: array<string, array{driver: string, options: array<string, mixed>}>, mappings: list<string>} $config
+     * @param array{default_connection: ?string, connections: array<string, array{driver: string, options: array<string, mixed>}>, mappings: list<string>, on_index_error: string} $config
      */
     public function loadExtension(array $config, ContainerConfigurator $container, ContainerBuilder $builder): void
     {
@@ -136,7 +142,15 @@ final class OmnisearchBundle extends AbstractBundle
 
         $indexed = array_values(array_diff(array_keys($config['connections']), $hosted));
         if ($doctrine && $indexed) {
-            $services->set(Indexer::class)->args([service(Manager::class), null, $indexed]);
+            $onError = match ($config['on_index_error'] ?? 'log') {
+                'throw' => null,
+                'log' => service(IndexErrorLogger::class),
+                default => service($config['on_index_error']),
+            };
+            if ('log' === ($config['on_index_error'] ?? 'log')) {
+                $services->set(IndexErrorLogger::class)->args([service('logger')->nullOnInvalid()]);
+            }
+            $services->set(Indexer::class)->args([service(Manager::class), $onError, $indexed]);
             $listener = $services->set(IndexListener::class)->args([service(Indexer::class)]);
             foreach (IndexListener::EVENTS as $event) {
                 $listener->tag('doctrine.event_listener', ['event' => $event]);

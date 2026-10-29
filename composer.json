@@ -30,7 +30,8 @@
         "symfony/config": "In a Symfony application: the configuration of Omnisearch\\Bridge\\Symfony\\OmnisearchBundle",
         "symfony/dependency-injection": "In a Symfony application: the services of Omnisearch\\Bridge\\Symfony\\OmnisearchBundle",
         "symfony/http-kernel": "In a Symfony application: Omnisearch\\Bridge\\Symfony\\OmnisearchBundle itself",
-        "symfony/console": "In a Symfony application: the omnisearch:* commands"
+        "symfony/console": "In a Symfony application: the omnisearch:* commands",
+        "psr/log": "In a Symfony application: the bundle's IndexErrorLogger logs a failed index write (on_index_error: log)"
     },
     "replace": {
         "omniscient/omnisearch": "self.version"

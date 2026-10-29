@@ -3,6 +3,7 @@
 namespace Omnisearch\ORM;
 
 use Omnisearch\DBAL\Batch;
+use Omnisearch\Memory\Identity;
 
 /**
  * The indexing rule, independent of any persistence's events: an object of
@@ -59,11 +60,19 @@ final class Indexer
         $this->persisted($object);
     }
 
-    /** Before the object is gone: its identifier is taken now. */
+    /**
+     * Before the object is gone: its identifier is taken now, by the manager's
+     * store - or, on a manager without one, as the memory engine takes it
+     * (Memory\Identity: getId(), else a public $id).
+     */
     public function removing(object $object): void
     {
-        if ($this->supports($object) && $this->manager->store()) {
-            $this->removing[$object] = $this->manager->store()->identify($object);
+        if (!$this->supports($object)) {
+            return;
+        }
+        $id = ($this->manager->store() ?? new Identity())->identify($object);
+        if ('' !== $id) {
+            $this->removing[$object] = $id;
         }
     }
 

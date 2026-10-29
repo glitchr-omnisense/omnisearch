@@ -53,7 +53,5 @@ the entities load in its Laravel twin with nothing of Symfony (README).
 
 - An engine other than Typesense and memory.
 - Doctrine's MongoDB ODM: `DoctrineObjectStore` falls back on `findBy()`, never run.
-- Entities with a composite identifier: indexed, never loaded back
-  ([known defect](concepts.md#doctrineobjectstore)).
 - Laravel: no bridge; the service provider of [Laravel](laravel.md) is the Laravel twin's shape,
   not a tested package.

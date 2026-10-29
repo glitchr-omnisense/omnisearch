@@ -314,12 +314,12 @@ the memory engine's default).
 `new DoctrineObjectStore(ObjectManager|ManagerRegistry $doctrine)`. An entity is identified by its
 identifier's values, joined by `-` when composite (an object value by its `__toString()`). `load()`
 asks the entity's manager in one query: with the ORM a `SELECT e FROM <class> e WHERE e.<id> IN
-(:ids)`, made cacheable in the second-level cache (and in the entity's cache region) when
+(:ids)` (for a composite identifier, each id split back into its values at its `-` - every split
+a value holding `-` allows - as `(e.<a> = ... AND e.<b> = ...) OR ...`, the entities whose
+`identify()` is the id kept), made cacheable in the second-level cache (and in the entity's cache region) when
 `$cacheable`; with another manager `findBy([<id> => $ids])` (Doctrine's MongoDB ODM, not
 verified). The entities come back in the order of the identifiers, those not found left out.
 
-> [!WARNING]
-> Known defect: `load()` queries the first identifier field only, with the joined strings, where `identify()` joins a composite identifier with `-`: an entity with a composite identifier is indexed but never loaded back, and `Result::objects()` leaves it out.
 
 ### `Transformer`
 

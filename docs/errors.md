@@ -54,8 +54,11 @@ errors.
 
 ## What is not an `OmnisearchException`
 
-> [!WARNING]
-> Known defect: `OmnisearchException` says it is "every exception of omnisearch and its drivers", but `Omnisearch\DBAL\Filter`'s constructor throws a plain `\InvalidArgumentException` (an unknown operator, `in`/`not in` without an array), and `TypesenseDriver::collection()` a plain `\LogicException` (an index the bundle does not know and no transformer to make it with).
+`Omnisearch\DBAL\Filter`'s constructor throws PHP's `\InvalidArgumentException` for a filter that
+can never work as written (an unknown operator, `in`/`not in` without an array): a mistake in the
+code, thrown at once, not a failure to catch - `OmnisearchException`'s docblock says so. An index
+omnisearch/typesense cannot make (the bundle does not know it, the driver has no transformer) is
+an `InvalidConfigException`.
 
 A driver catches its engine library's transport exceptions whatever HTTP client the library was
 given: omnisearch/typesense catches the PSR-18 interfaces, so Symfony's `Psr18NetworkException`

@@ -132,8 +132,8 @@ The pieces:
   memory engine identifies an object by its `getId()` or its public `$id` (`Memory\Identity`),
   `Result::objects()` is empty and only the documents come back (`raw()`, `hits()`).
 
-> [!WARNING]
-> Known defect: the `Indexer` takes a removed object's identifier from the manager's store only. On a `Manager` built without an `ObjectStore`, `removing()` takes nothing and `removed()` writes nothing: the document stays in its index, where the rule says it is removed. Give the manager a store, or call `$manager->connection($object)->remove($metadata, $id)` yourself.
+Without a store, the `Indexer` takes a removed object's identifier the same way, so it is taken
+out of its index.
 
 ## Doctrine and Typesense
 

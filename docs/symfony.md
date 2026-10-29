@@ -27,6 +27,7 @@ omnisearch:
             driver: typesense
             options: { connection: default }       # glitchr/typesense-bundle's connection
     mappings: ['%kernel.project_dir%/src/Entity']  # the classes declaring an #[Index]; src/ by default
+    on_index_error: log                            # a write that fails during Doctrine's flush: log, throw, or a service id
 ```
 
 ```php
@@ -57,6 +58,9 @@ omnisearch:
 
     # The directories whose classes declare an #[Index]: src/ when none is given.
     mappings:             []
+
+    # A write an engine refuses, or cannot reach, during Doctrine's flush (after the database committed): "log" (the logger, the flush goes on), "throw" (out of EntityManager::flush()), or the id of a service called with the \Throwable.
+    on_index_error:       log
 ```
 
 | Key | Type | Default | |
@@ -65,6 +69,7 @@ omnisearch:
 | `connections.<name>.driver` | string | required | the driver factory's name: `typesense`, `memory`, or an application factory's |
 | `connections.<name>.options` | any | `[]` | handed whole to the factory's `create()`; each driver's options are in [Configuration](configuration.md#driver-options) |
 | `mappings` | list of strings | `[]` | the directories scanned for `#[Index]`; `%kernel.project_dir%/src` when empty; parameters are resolved |
+| `on_index_error` | string | `log` | the `Indexer`'s `$onError`: `log` (`Bridge\Symfony\IndexErrorLogger`: the `logger` service at error level, the exception in the context, PHP's error log without one; the flush goes on), `throw` (no `$onError`: out of `EntityManager::flush()`), or a service id, called with the `\Throwable` |
 
 ## What the bundle registers
 
@@ -77,7 +82,7 @@ omnisearch:
 | `Omnisearch\Typesense\TypesenseDriverFactory` | private, autowired | when omnisearch/typesense is installed; given glitchr/typesense-bundle's `TypesenseManager` and Doctrine's `ObjectManager` when they exist |
 | `Omnisearch\Memory\MemoryDriverFactory` | private, autowired | always; given the `ObjectStore` when there is one |
 | `Omnisearch\Bridge\Doctrine\DoctrineObjectStore`, alias `Omnisearch\ORM\ObjectStore` | private | with DoctrineBundle; over the `doctrine` registry |
-| `Omnisearch\ORM\Indexer`, `Omnisearch\Bridge\Doctrine\IndexListener` | private | with DoctrineBundle, when a connection is not hosted; the listener tagged `doctrine.event_listener` for `postPersist`, `postUpdate`, `preRemove`, `postRemove`, `postFlush` |
+| `Omnisearch\ORM\Indexer`, `Omnisearch\Bridge\Doctrine\IndexListener`, `Omnisearch\Bridge\Symfony\IndexErrorLogger` | private | with DoctrineBundle, when a connection is not hosted (the logger with `on_index_error: log`); the listener tagged `doctrine.event_listener` for `postPersist`, `postUpdate`, `preRemove`, `postRemove`, `postFlush` |
 | `IndexesCommand`, `SchemaCommand` | tagged `console.command` | when symfony/console is installed |
 
 The parameter `omnisearch.hosted_connections` lists the connections an engine's own bundle hosts.
@@ -134,8 +139,10 @@ With DoctrineBundle, the connections no host serves are indexed by `IndexListene
 [indexing rule](indexing.md): an entity of a declared class persisted or updated is indexed, one
 removed is removed, everything sent on `postFlush`, consecutive writes of one index in one call.
 
-> [!WARNING]
-> Known defect: the bundle builds the `Indexer` with no `$onError` and has no option to give one, so an engine that refuses a write or cannot be reached makes `EntityManager::flush()` throw a `DriverException` from `postFlush`, after the database has committed, where the rule says the failure does not stop the application's flush. Register your own `Indexer` (with an `$onError`) and `IndexListener` in place of the bundle's when this matters.
+An engine that refuses a write or cannot be reached during that flush does not stop it - the
+database has committed by then: the bundle gives the `Indexer` the `on_index_error` handler, by
+default `IndexErrorLogger`, which logs it. `on_index_error: throw` keeps the exception, thrown out
+of `EntityManager::flush()`.
 
 ## Commands
 

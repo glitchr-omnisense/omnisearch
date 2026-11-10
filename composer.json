@@ -12,7 +12,8 @@
         }
     ],
     "require": {
-        "php": ">=8.2"
+        "php": ">=8.2",
+        "omnisense/contracts": "^1.0@dev"
     },
     "require-dev": {
         "doctrine/orm": "^3.0",

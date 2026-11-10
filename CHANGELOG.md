@@ -2,6 +2,15 @@
 
 ## Unreleased (1.x)
 
+### Changed
+- omnisense/omnisearch requires omnisense/contracts, the kernel of the omni families:
+  `OmnisearchException` implements its `ExceptionInterface` (one catch holds every family's
+  failures); nothing else of the public API changes. The `Registry` of connections, the
+  `DriverFactory` and the exceptions' classes stay omnisearch's own: a connection is not the
+  kernel's provider, and the drivers have no usage limit to guard (omnisearch/typesense's policy
+  declares none). The harness installs omnisense/contracts from its checkout
+  (`OMNISENSE_CONTRACTS`) or GitHub, runs PHPStan (`phpstan`) and names its entrypoint.
+
 ### Fixed
 - Under the Symfony bundle, a write an engine refuses or cannot reach during Doctrine's flush no
   longer throws out of `EntityManager::flush()` after the database committed: the bundle gives

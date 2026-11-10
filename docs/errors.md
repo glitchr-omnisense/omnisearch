@@ -19,7 +19,8 @@ A search does not throw for the engine's sake: it answers a `Response` (a `Resul
 ```
 
 `OmnisearchException` is not final: catch it for "anything omnisearch". The three below are
-`final`.
+`final`. It implements omnisense/contracts' `Omnisense\Contracts\Exception\ExceptionInterface`:
+one catch holds the failures of every omni family.
 
 ### `DriverException`
 

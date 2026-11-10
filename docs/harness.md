@@ -7,13 +7,17 @@ order: 70
 
 `docker/` runs this package with every `omnisearch/*` driver - from GitHub (branch 1.x), or from
 the checkouts beside this one when `OMNISEARCH_PLUGINS=../..` is set in `docker/.env` - and a
-Typesense server (30.0, data in memory).
+Typesense server (30.0, data in memory). The image may be another family's harness tagged
+(`docker tag omnisense/<family>-harness omnisense/omnisearch-harness`): the compose file names the
+entrypoint. Without the compose network, the harness runs on Docker's default bridge with
+`TYPESENSE_URL` set to the server container's address.
 
 ```sh
 cd docker && cp .env.dist .env       # the checkouts of the workspace
 docker compose run --rm omnisearch test          # every package's tests
 docker compose run --rm omnisearch bare          # plain PHP: memory, then Typesense, and what PHP loaded
 docker compose run --rm omnisearch bare --memory
+docker compose run --rm omnisearch phpstan       # PHPStan at level max on each package, its baseline included
 docker compose down -v
 ```
 
@@ -37,6 +41,7 @@ The `omnisearch` service is given `TYPESENSE_URL=http://typesense:8108` and `TYP
 | Variable | Default | |
 |---|---|---|
 | `OMNISEARCH_PLUGINS` | `./plugins` (empty) | the directory holding the drivers' checkouts, one per slug (`typesense/`); `.env.dist` sets `../..`, the workspace |
+| `OMNISENSE_CONTRACTS` | `./contracts` (empty) | omnisense/contracts' checkout (`../../../omnisense-contracts` beside the family's folder), its tests run with the family's; GitHub's 1.x when empty |
 | `TYPESENSE_KEY` | `xyz` | the Typesense server's API key |
 
 ## What the entrypoint does

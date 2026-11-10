@@ -9,6 +9,6 @@ parameters:
     paths:
         - .
     excludePaths:
-        - vendor
+        - vendor (?)
         - docker
     reportUnmatchedIgnoredErrors: false

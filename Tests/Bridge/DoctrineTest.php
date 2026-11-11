@@ -25,9 +25,10 @@ use PHPUnit\Framework\TestCase;
  */
 final class DoctrineTest extends TestCase
 {
-    public static function entityManager(): EntityManager
+    /** @param string $entities the directory of the entities, the fixtures' by default */
+    public static function entityManager(?string $entities = null): EntityManager
     {
-        $configuration = ORMSetup::createAttributeMetadataConfig([\dirname(__DIR__).'/Fixtures'], true);
+        $configuration = ORMSetup::createAttributeMetadataConfig([$entities ?? \dirname(__DIR__).'/Fixtures'], true);
         if (\PHP_VERSION_ID >= 80400 && method_exists($configuration, 'enableNativeLazyObjects')) {
             $configuration->enableNativeLazyObjects(true);
         }
@@ -43,12 +44,7 @@ final class DoctrineTest extends TestCase
         if (!class_exists(EntityManager::class)) {
             self::markTestSkipped('doctrine/orm is not installed.');
         }
-        $configuration = ORMSetup::createAttributeMetadataConfig([\dirname(__DIR__).'/Composite'], true);
-        if (\PHP_VERSION_ID >= 80400 && method_exists($configuration, 'enableNativeLazyObjects')) {
-            $configuration->enableNativeLazyObjects(true);
-        }
-        $entityManager = new EntityManager(DriverManager::getConnection(['driver' => 'pdo_sqlite', 'memory' => true], $configuration), $configuration);
-        (new SchemaTool($entityManager))->createSchema($entityManager->getMetadataFactory()->getAllMetadata());
+        $entityManager = self::entityManager(\dirname(__DIR__).'/Composite');
         $store = new DoctrineObjectStore($entityManager);
         $manager = new Manager(new Registry([new MemoryDriverFactory($store)], ['default' => ['driver' => 'memory']]), MetadataRegistry::fromDirectories([\dirname(__DIR__).'/Composite']), $store);
         $manager->create();
@@ -62,7 +58,10 @@ final class DoctrineTest extends TestCase
         $entityManager->clear();
 
         self::assertSame('978-2-07-036822-8-2', $store->identify($editions[1]));
-        $loaded = $store->load(AttributeLoader::load(\Omnisearch\Tests\Composite\Edition::class), ['978-2-07-036822-8-2', '978-2-07-36822', '978-2-07-036822-8-1']);
+        $metadata = AttributeLoader::load(\Omnisearch\Tests\Composite\Edition::class);
+        self::assertNotNull($metadata);
+        $loaded = $store->load($metadata, ['978-2-07-036822-8-2', '978-2-07-36822', '978-2-07-036822-8-1']);
+        self::assertContainsOnlyInstancesOf(\Omnisearch\Tests\Composite\Edition::class, $loaded);
         self::assertSame(['Vol de nuit, reprinted', 'Not the same edition', 'Vol de nuit'], array_map(static fn ($e) => $e->getTitle(), $loaded), 'each by its whole identifier, in the order asked');
 
         $result = $manager->finder(\Omnisearch\Tests\Composite\Edition::class)->search(new Query('vol'));

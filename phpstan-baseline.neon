@@ -91,12 +91,6 @@ parameters:
 			path: Bridge/Symfony/OmnisearchBundle.php
 
 		-
-			message: '#^Call to function is_subclass_of\(\) with ''Omnisearch\\\\Memory\\\\MemoryDriverFactory'' and ''Omnisearch\\\\DBAL\\\\DriverFactory'' will always evaluate to true\.$#'
-			identifier: function.alreadyNarrowedType
-			count: 1
-			path: Bridge/Symfony/OmnisearchBundle.php
-
-		-
 			message: '#^Cannot access offset ''DoctrineBundle'' on array\|bool\|float\|int\|string\|UnitEnum\.$#'
 			identifier: offsetAccess.nonOffsetAccessible
 			count: 1
@@ -590,12 +584,6 @@ parameters:
 
 		-
 			message: '#^Parameter \#1 \$array of function array_keys expects array, mixed given\.$#'
-			identifier: argument.type
-			count: 1
-			path: Tests/Bridge/OmnisearchBundleTest.php
-
-		-
-			message: '#^Parameter \#1 \$extension of method Symfony\\Component\\DependencyInjection\\ContainerBuilder\:\:registerExtension\(\) expects Symfony\\Component\\DependencyInjection\\Extension\\ExtensionInterface, Symfony\\Component\\DependencyInjection\\Extension\\ExtensionInterface\|null given\.$#'
 			identifier: argument.type
 			count: 1
 			path: Tests/Bridge/OmnisearchBundleTest.php

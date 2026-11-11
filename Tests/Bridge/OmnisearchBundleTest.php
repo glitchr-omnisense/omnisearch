@@ -26,7 +26,9 @@ final class OmnisearchBundleTest extends TestCase
         $container->setParameter('kernel.bundles', []);
         $container->register(Notes::class)->setAutowired(true)->setPublic(true);
         $bundle = new OmnisearchBundle();
-        $container->registerExtension($bundle->getContainerExtension());
+        $extension = $bundle->getContainerExtension();
+        self::assertNotNull($extension);
+        $container->registerExtension($extension);
         $container->loadFromExtension('omnisearch', [
             'connections' => ['default' => ['driver' => 'memory']],
             'mappings' => ['%kernel.project_dir%/Fixtures'],
@@ -57,12 +59,12 @@ final class OmnisearchBundleTest extends TestCase
         self::assertEquals(new Reference('app.index_errors'), self::indexer(['on_index_error' => 'app.index_errors'])->getArgument(1));
 
         $logger = new class extends AbstractLogger {
-            /** @var list<array{string, string, array<string, mixed>}> */
+            /** @var list<array{mixed, string, array<mixed>}> */
             public array $logs = [];
 
             public function log($level, \Stringable|string $message, array $context = []): void
             {
-                $this->logs[] = [(string) $level, (string) $message, $context];
+                $this->logs[] = [$level, (string) $message, $context];
             }
         };
         $failure = new DriverException('Typesense: not reached', 503);
@@ -78,7 +80,9 @@ final class OmnisearchBundleTest extends TestCase
         $container = new ContainerBuilder();
         $container->setParameter('kernel.project_dir', \dirname(__DIR__));
         $container->setParameter('kernel.bundles', ['DoctrineBundle' => 'Doctrine\\Bundle\\DoctrineBundle\\DoctrineBundle']);
-        $container->registerExtension((new OmnisearchBundle())->getContainerExtension());
+        $bundle = (new OmnisearchBundle())->getContainerExtension();
+        self::assertNotNull($bundle);
+        $container->registerExtension($bundle);
         $container->loadFromExtension('omnisearch', $config + ['connections' => ['default' => ['driver' => 'memory']], 'mappings' => ['%kernel.project_dir%/Fixtures']]);
         foreach ($container->getExtensions() as $extension) {
             $extension->load($container->getExtensionConfig($extension->getAlias()), $container);

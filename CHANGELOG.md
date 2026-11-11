@@ -10,6 +10,10 @@
   kernel's provider, and the drivers have no usage limit to guard (omnisearch/typesense's policy
   declares none). The harness installs omnisense/contracts from its checkout
   (`OMNISENSE_CONTRACTS`) or GitHub, runs PHPStan (`phpstan`) and names its entrypoint.
+- PHPStan max green again over the 2026-10-21 baseline, types only: `OmnisearchBundle` drops its
+  `is_subclass_of()` checks on the drivers and hosts it lists (each implements `DriverFactory` /
+  `Host`) and its `?? 'log'` on `on_index_error` (the configuration always sets it); its tests
+  narrow what they read. Two baseline entries fixed and removed.
 
 ### Fixed
 - Under the Symfony bundle, a write an engine refuses or cannot reach during Doctrine's flush no

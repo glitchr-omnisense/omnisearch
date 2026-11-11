@@ -90,7 +90,7 @@ final class OmnisearchBundle extends AbstractBundle
         $default = $config['default_connection'] ?? array_key_first($config['connections']);
         foreach ($config['connections'] as $name => $connection) {
             $host = self::HOSTS[$connection['driver']] ?? null;
-            if (null === $host || !class_exists($host) || !is_subclass_of($host, Host::class) || !$host::hosts($builder)) {
+            if (null === $host || !class_exists($host) || !$host::hosts($builder)) {
                 continue;
             }
             $host::prepend($builder, $name, $connection['options'], array_values(array_filter($metadata, fn (ClassMetadata $m) => ($m->connection ?? $default) === $name)));
@@ -111,7 +111,7 @@ final class OmnisearchBundle extends AbstractBundle
 
         $services = $container->services();
         foreach (self::FACTORIES as $factory) {
-            if (class_exists($factory) && is_subclass_of($factory, DriverFactory::class)) {
+            if (class_exists($factory)) {
                 $services->set($factory)->autowire()->tag('omnisearch.driver_factory');
             }
         }
@@ -142,12 +142,12 @@ final class OmnisearchBundle extends AbstractBundle
 
         $indexed = array_values(array_diff(array_keys($config['connections']), $hosted));
         if ($doctrine && $indexed) {
-            $onError = match ($config['on_index_error'] ?? 'log') {
+            $onError = match ($config['on_index_error']) {
                 'throw' => null,
                 'log' => service(IndexErrorLogger::class),
                 default => service($config['on_index_error']),
             };
-            if ('log' === ($config['on_index_error'] ?? 'log')) {
+            if ('log' === $config['on_index_error']) {
                 $services->set(IndexErrorLogger::class)->args([service('logger')->nullOnInvalid()]);
             }
             $services->set(Indexer::class)->args([service(Manager::class), $onError, $indexed]);

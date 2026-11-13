@@ -5,6 +5,64 @@ attributes, a manager hands out finders, a query is written once, the objects co
 hits. A DBAL - connections, drivers, requests and responses - under an ORM - metadata, finders,
 queries, results, the indexing rule.
 
+## Install and a first call
+
+```sh
+composer require omnisense/omnisearch
+```
+
+No server, no account, no framework: the memory engine (`Omnisearch\Memory`) runs the search in the
+PHP process itself. The application's own `ObjectStore` says what identifies an object and loads
+objects back from identifiers, so the search answers notes rather than documents. A real engine is
+a package of its own: `omnisearch/typesense` needs a Typesense server (one's own, which needs no
+account, or a Typesense Cloud cluster) and its API key.
+
+```php
+<?php
+
+require __DIR__.'/vendor/autoload.php';
+
+use Omnisearch\Mapping\{AttributeLoader, ClassMetadata, Field, Index, MetadataRegistry, Type};
+use Omnisearch\Memory\MemoryDriverFactory;
+use Omnisearch\ORM\{Indexer, Manager, ObjectStore, Query};
+use Omnisearch\Registry;
+
+#[Index('note')]
+final class Note
+{
+    public function __construct(public readonly string $id, #[Field(infix: true)] public readonly string $text, #[Field(type: Type::INT, sort: true)] public readonly int $rank)
+    {
+    }
+}
+
+final class Notes implements ObjectStore   // where the notes live: an array here, a database in an application
+{
+    public array $notes = [];
+
+    public function identify(object $object): string { return $object->id; }
+
+    public function load(ClassMetadata $metadata, array $ids, bool $cacheable = false): array
+    {
+        return array_values(array_filter(array_map(fn ($id) => $this->notes[$id] ?? null, $ids)));
+    }
+}
+
+$store = new Notes();
+$manager = new Manager(new Registry([new MemoryDriverFactory($store)], ['default' => ['driver' => 'memory']]), new MetadataRegistry([AttributeLoader::load(Note::class)]), $store);
+$manager->create();
+$indexer = new Indexer($manager);
+foreach ([new Note('1', 'Mount Fuji at dawn', 3), new Note('2', 'Fujisan in music', 1), new Note('3', 'A recipe for ramen', 2)] as $note) {
+    $indexer->persisted($store->notes[$note->id] = $note);
+}
+$indexer->flush();
+
+foreach ($manager->finder(Note::class)->search((new Query('fuji'))->in('text')->sortBy('rank', 'desc'))->objects() as $note) {
+    echo $note->id, ' ', $note->text, "\n";   // 1 Mount Fuji at dawn, then 2 Fujisan in music
+}
+```
+
+An application's class, its index declared by attributes, then a search:
+
 ```php
 use Omnisearch\Mapping\{Field, Index, Type};
 
